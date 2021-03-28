@@ -1,4 +1,4 @@
-FROM ruby:3.0.0-alpine3.13
+FROM ruby:3.0.0-alpine
 
 ENV ROOT="/app" \
   LANG=C.UTF-8 \
@@ -15,9 +15,18 @@ RUN apk update && \
   apk add --no-cache \
   bash \
   tzdata \
+  libxml2 \
+  libxslt \
+  gmp \
+  mysql-client \
   mariadb-connector-c && \
   apk add --virtual build-dependencies --no-cache \
   build-base \
+  curl-dev \
+  mysql-dev \
+  libxml2-dev \
+  libxslt-dev \
+  gmp-dev \
   mariadb-connector-c-dev && \
   gem install bundler && \
   bundle install -j4 && \
