@@ -14,20 +14,17 @@ RUN apk update && \
   apk upgrade && \
   apk add --no-cache \
   bash \
+  linux-headers \
+  libxml2-dev \
+  make \
+  gcc \
+  libc-dev \
   tzdata \
-  libxml2 \
-  libxslt \
-  gmp \
-  mysql-client \
-  mariadb-connector-c && \
+  postgresql-dev \
+  postgresql && \
   apk add --virtual build-dependencies --no-cache \
   build-base \
-  curl-dev \
-  mysql-dev \
-  libxml2-dev \
-  libxslt-dev \
-  gmp-dev \
-  mariadb-connector-c-dev && \
+  curl-dev && \
   gem install bundler && \
   bundle install -j4 && \
   apk del build-dependencies
