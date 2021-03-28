@@ -1,40 +1,16 @@
-FROM ruby:3.0.0-alpine
+FROM ruby:3.0.0
 
-ENV ROOT="/app" \
-  LANG=C.UTF-8 \
-  TZ=Asia/Tokyo
+RUN apt-get update -qq && \
+  apt-get install -y build-essential \ 
+  libpq-dev \        
+  nodejs \
+  && rm -rf /var/lib/apt/lists/* 
 
-# WORKDIRは RUN mkdir も兼ねる
-WORKDIR $ROOT
+RUN mkdir /app
+ENV APP_ROOT /app
+WORKDIR $APP_ROOT
 
-COPY Gemfile $ROOT
-COPY Gemfile.lock $ROOT
+ADD ./Gemfile $APP_ROOT/Gemfile
+ADD ./Gemfile.lock $APP_ROOT/Gemfile.lock
 
-RUN apk update && \
-  apk upgrade && \
-  apk add --no-cache \
-  bash \
-  linux-headers \
-  libxml2-dev \
-  make \
-  gcc \
-  libc-dev \
-  tzdata \
-  postgresql-dev \
-  postgresql && \
-  apk add --virtual build-dependencies --no-cache \
-  build-base \
-  curl-dev && \
-  gem install bundler && \
-  bundle install -j4 && \
-  apk del build-dependencies
-
-COPY . $ROOT
-
-# Add a script to be executed every time the container starts.
-COPY entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
-EXPOSE 3000
-
-CMD ["rails", "server", "-b", "0.0.0.0"]
+RUN bundle install
